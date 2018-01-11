@@ -1,4 +1,4 @@
-package priv.L.parser.sql
+package priv.L.parser.bsiSql.sql
 
 abstract class Exp {
   def getStruct: String
