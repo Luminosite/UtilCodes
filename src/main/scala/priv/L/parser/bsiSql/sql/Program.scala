@@ -23,10 +23,11 @@ object Program {
         try{
           val cst = parser.singleStatement()
           val ast = new BsiSqlParser(inputStream).visitSingleStatement(cst)
-          println(s":${ast.getStruct}")
+          println(s":${ast.get.getStruct}")
         } catch {
           case ex: Exception =>
             println(s"get Exception: ${ex.getMessage} for $input")
+            ex.printStackTrace()
         }
       }
     }

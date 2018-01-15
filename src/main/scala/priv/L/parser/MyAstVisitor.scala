@@ -1,23 +1,6 @@
 package priv.L.parser
 
-import research.parser.MathParser.CompileUnitContext
-import research.parser.{MathBaseVisitor, MathLexer, MathParser}
-
 class MyAstVisitor {
-  /**
-  case class AddNode(left: ExpNode, right: ExpNode) extends InfixNode(left, right){val op = "+"}
-case class SubNode(left: ExpNode, right: ExpNode) extends InfixNode(left, right){val op = "-"}
-case class DivNode(left: ExpNode, right: ExpNode) extends InfixNode(left, right){val op = "*"}
-case class MulNode(left: ExpNode, right: ExpNode) extends InfixNode(left, right){val op = "/"}
-
-case class NegateNode(inner: ExpNode) extends ExpNode {def getString: String = s"[-${inner.getString}]"}
-
-case class FunNode(function1: (Double) => Double, node: ExpNode) extends ExpNode {
-  override def getString: String = s"Func[${function1.toString()}, ${node.getString}]"}
-
-case class NumberNode(value: Double) extends ExpNode {
-  override def getString: String = s"$value"}
-    */
   def visit(node: ExpNode): Double = node match {
     case n if n.isInstanceOf[AddNode] => visit(n.asInstanceOf[AddNode])
     case n if n.isInstanceOf[SubNode] => visit(n.asInstanceOf[SubNode])

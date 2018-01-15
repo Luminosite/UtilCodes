@@ -343,7 +343,7 @@ queryOrganization
       (DISTRIBUTE BY distributeBy+=expression (',' distributeBy+=expression)*)?
       (SORT BY sort+=sortItem (',' sort+=sortItem)*)?
       windows?
-      (LIMIT (ALL | limit=expression))?
+      (LIMIT (ALL | limit=expression))?                                             #organizationClause
     ;
 
 multiInsertQueryBody
@@ -359,9 +359,9 @@ queryTerm
 
 queryPrimary
     : querySpecification                                                    #queryPrimaryDefault
-    | TABLE tableIdentifier                                                 #table
-    | inlineTable                                                           #inlineTableDefault1
-    | '(' queryNoWith  ')'                                                  #subquery
+    | TABLE tableIdentifier                                                 #otherQueryPrimary//#table
+    | inlineTable                                                           #otherQueryPrimary//#inlineTableDefault1
+    | '(' queryNoWith  ')'                                                  #otherQueryPrimary//#subquery
     ;
 
 sortItem
@@ -379,14 +379,14 @@ querySpecification
        outRowFormat=rowFormat?
        (RECORDREADER recordReader=STRING)?
        fromClause?
-       (WHERE where=booleanExpression)?)
-    | ((kind=SELECT (hints+=hint)* setQuantifier? namedExpressionSeq fromClause?
+       (WHERE where=booleanExpression)?)                                                    #simpleQuery
+    | ((kind=SELECT (hints+=hint)* setQuantifier? variables=namedExpressionSeq fromClausePart=fromClause?
        | fromClause (kind=SELECT setQuantifier? namedExpressionSeq)?)
        lateralView*
        (WHERE where=booleanExpression)?
        aggregation?
        (HAVING having=booleanExpression)?
-       windows?)
+       windows?)                                                                            #normalQuery
     ;
 
 hint
@@ -399,7 +399,7 @@ hintStatement
     ;
 
 fromClause
-    : FROM relation (',' relation)* lateralView*
+    : FROM relationPart+=relation (',' relationPart+=relation)* lateralView*        #fromParts
     ;
 
 aggregation
@@ -424,12 +424,12 @@ setQuantifier
     ;
 
 relation
-    : relationPrimary joinRelation*
+    : primaryPart=relationPrimary joinParts+=joinRelation*          #relationParts
     ;
 
 joinRelation
-    : (joinType) JOIN right=relationPrimary joinCriteria?
-    | NATURAL joinType JOIN right=relationPrimary
+    : (joinType) JOIN right=relationPrimary joinCriteria?           #normalJoin
+    | NATURAL joinType JOIN right=relationPrimary                   #naturalJoin
     ;
 
 joinType
@@ -484,7 +484,7 @@ identifierComment
     ;
 
 relationPrimary
-    : tableIdentifier sample? tableAlias      #tableName
+    : identifierPart=tableIdentifier sample? aliasPart=tableAlias      #tableName
     | '(' queryNoWith ')' sample? tableAlias  #aliasedQuery
     | '(' relation ')' sample? tableAlias     #aliasedRelation
     | inlineTable                             #inlineTableDefault2
