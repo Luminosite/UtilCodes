@@ -2,7 +2,7 @@ package priv.L.parser
 
 import java.util.Scanner
 
-import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
+import org.antlr.v4.runtime.{ANTLRInputStream, CommonTokenStream}
 import research.parser.{MathLexer, MathParser}
 
 object Program {
@@ -15,7 +15,8 @@ object Program {
       if(input.trim.toLowerCase()==":q"){
         continue = false
       } else {
-        val inputStream = CharStreams.fromString(input)
+//        val inputStream = CharStreams.fromString(input)
+        val inputStream = new ANTLRInputStream(input)
         val lexer = new MathLexer(inputStream)
         val tokenStream = new CommonTokenStream(lexer)
         val parser = new MathParser(tokenStream)

@@ -6,7 +6,7 @@ scalaVersion := "2.11.8"
 
 antlr4Settings
 
-antlr4Version in Antlr4 := "4.7"
+antlr4Version in Antlr4 := "4.5.3"
 
 antlr4PackageName in Antlr4 := Some("research.parser")
 antlr4GenListener in Antlr4 := true // default: true

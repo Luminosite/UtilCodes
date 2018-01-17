@@ -2,10 +2,18 @@ package priv.L.parser.bsiSql.sql
 
 import java.util.Scanner
 
-import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
+import org.antlr.v4.runtime.{ANTLRInputStream, CommonTokenStream}
 import research.parser.{BsiSqlBaseLexer, BsiSqlBaseParser}
 
 object Program {
+  def getParsedData(input: String): (ANTLRInputStream, BsiSqlBaseParser) = {
+    val inputStream = new ANTLRInputStream(input)
+    val lexer = new BsiSqlBaseLexer(inputStream)
+    val tokenStream = new CommonTokenStream(lexer)
+    val parser = new BsiSqlBaseParser(tokenStream)
+    (inputStream, parser)
+  }
+
   def main(args: Array[String]): Unit = {
     val scan = new Scanner(System.in)
     var continue = true
@@ -15,10 +23,7 @@ object Program {
       if(input.trim.toLowerCase()==":q"){
         continue = false
       } else {
-        val inputStream = CharStreams.fromString(input)
-        val lexer = new BsiSqlBaseLexer(inputStream)
-        val tokenStream = new CommonTokenStream(lexer)
-        val parser = new BsiSqlBaseParser(tokenStream)
+        val (inputStream, parser) = getParsedData(input)
 
         try{
           val cst = parser.singleStatement()
