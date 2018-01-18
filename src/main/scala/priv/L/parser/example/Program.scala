@@ -1,4 +1,4 @@
-package priv.L.parser
+package priv.L.parser.example
 
 import java.util.Scanner
 

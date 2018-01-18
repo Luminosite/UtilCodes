@@ -1,4 +1,4 @@
-package priv.L.parser
+package priv.L.parser.example
 
 class MyAstVisitor {
   def visit(node: ExpNode): Double = node match {

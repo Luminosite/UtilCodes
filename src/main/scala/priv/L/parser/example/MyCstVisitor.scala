@@ -1,4 +1,4 @@
-package priv.L.parser
+package priv.L.parser.example
 
 import research.parser.MathParser.CompileUnitContext
 import research.parser.{MathBaseVisitor, MathLexer, MathParser}
