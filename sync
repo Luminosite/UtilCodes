@@ -1,0 +1,36 @@
+#!/bin/bash
+
+. ./utils.sh
+
+if [[ $# -lt 1 ]];
+then
+    echo "host missing"
+    exit 1
+else
+    host=$1
+fi
+version=`getVersion`
+echo "Version is $version"
+suffix="_$version"
+name=`getName`
+echo "Name is $name"
+user=`whoami`
+chmod 755 target/pack/script/*.sh
+echo "Creating directory on remote"
+ssh $host "mkdir -p /x/home/$user/workspace/${name}$suffix/jars/ /x/home/$user/workspace/${name}$suffix/script/"
+rsync -azP target/pack/lib/ $host:/x/home/$user/workspace/${name}$suffix/jars/lib/
+rsync -azP target/pack/resources/*.json $host:/x/home/$user/workspace/${name}$suffix/script/resources/
+rsync -azP target/pack/script/* $host:/x/home/$user/workspace/${name}$suffix/script/
+rsync -azP target/pack/bin/* $host:/x/home/$user/workspace/${name}$suffix/bin/
+rsync -azP target/pack/resources/*.json $host:/x/home/$user/workspace/spear-v2-conf/
+
+echo ""
+excludeFiles='--exclude=*.jar --exclude=*sync --exclude-dir=target --exclude-dir=.git'
+if grep -Rq ${excludeFiles} TOFIX .; then
+    echo "There's unfinished TOFIX:"
+    grep -R ${excludeFiles} TOFIX .
+else
+    echo "all TOFIX is done"
+fi
+
+[ $# -eq 2 ] && echo FIXED: && grep -R ${excludeFiles} FIXED .
